@@ -6,10 +6,12 @@
 //   }
 // );
 
-function getIt() {
+function getIt(defaultInput) {
   $("#carouselExampleDark").empty();
   let input = $("#input").val();
-  console.log(input);
+  if (defaultInput !== undefined) {
+    input = defaultInput;
+  }
   $.get(
     `https://developer.nps.gov/api/v1/parks?parkCode=${input}&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
     (data) => {
@@ -20,23 +22,17 @@ function getIt() {
   );
 }
 
-// $("#yosemite").on("click", function () {
-//   getIt();
-// });
+$("#yosemite").on("click", function () {
+  getIt("yose");
+});
 
-// $("#yellowStone").on("click", function () {
-//   getIt();
-// });
+$("#yellowStone").on("click", function () {
+  getIt("yell");
+});
 
-// $("#arch").on("click", function () {
-//   getIt();
-// });
-
-// // $("body").keydown(function (event) {
-// //   if ((event, key === "Enter" && $("input").val() !== "")) {
-// //     getIt();
-// //   }
-// // });
+$("#arch").on("click", function () {
+  getIt("arch");
+});
 
 $("#search").on("click", function () {
   getIt();
