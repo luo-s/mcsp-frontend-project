@@ -1,12 +1,5 @@
-// //
-// $.get(
-//   "https://developer.nps.gov/api/v1/parks?parkCode=yellow&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh",
-//   (data) => {
-//     console.log(data);
-//   }
-// );
-
 function getIt(defaultInput) {
+  $("#cards").empty();
   $("#carouselExampleDark").empty();
   let input = $("#input").val();
   if (defaultInput !== undefined) {
@@ -15,6 +8,16 @@ function getIt(defaultInput) {
   $.get(
     `https://developer.nps.gov/api/v1/parks?parkCode=${input}&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
     (data) => {
+      if (data.data.length === 0) {
+        $.get(
+          `https://developer.nps.gov/api/v1/parks?q=${input}&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
+          (data) => {
+            console.log(data.data);
+            update(data.data);
+            return;
+          }
+        );
+      }
       console.log(data.data);
       update(data.data);
       return;
@@ -32,6 +35,18 @@ $("#yellowStone").on("click", function () {
 
 $("#arch").on("click", function () {
   getIt("arch");
+});
+
+$("#grandTeton").on("click", function () {
+  getIt("grte");
+});
+
+$("#joshuaTree").on("click", function () {
+  getIt("jotr");
+});
+
+$("#zion").on("click", function () {
+  getIt("zion");
 });
 
 $("#search").on("click", function () {
