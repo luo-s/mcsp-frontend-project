@@ -44,13 +44,6 @@ function getIt(defaultInput) {
             updateAlerts(data.data);
           }
         );
-        // events API
-        $.get(
-          `https://developer.nps.gov/api/v1/events?q=${input}&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
-          (data) => {
-            updateEvents(data.data);
-          }
-        );
         return;
       }
     }
@@ -124,15 +117,16 @@ function updatePark(data) {
           <p class="card-text">${description}</p>
         </div>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">${directionsInfo}</li>
           <li class="list-group-item">${address.line1}, ${address.city}, ${address.stateCode} ${address.postalCode}
-            <a href="${directions}" class="card-link" target="_blank">Directions</a>
           </li>
           <li class="list-group-item">Contact Number: ${phoneNumber} | Email: ${emailAddress}</li>
           <li id="buttons" class="list-group-item" class="buttons">
           <button type="button" id="${parkCode}" class="btn btn-success">${name}</button>
           <button type="button" class="btn btn-dark"
           onclick="window.open('https://en.wikipedia.org/wiki/${name}')">Wikipedia
+          </button>
+          <button type="button" class="btn btn-primary" target="_blank"
+          onclick="window.open('${directions}')">Direction
           </button>
           </li>
         </ul>
@@ -269,34 +263,6 @@ function updatePlacesToGo(data) {
       continue;
     }
     const url = ele.url;
-    const name = ele.title;
-    const li = document.createElement("li");
-    const a = document.createElement("a");
-    a.className = "dropdown-item";
-    a.target = "_blank";
-    a.href = url;
-    a.textContent = name;
-    $(".dropdown-menu").append(li);
-    li.append(a);
-  }
-}
-function updateEvents(data) {
-  const html = `
-    <div class="btn-group">
-      <button type="button" class="btn btn-info dropdown-toggle"
-      data-bs-toggle="dropdown" aria-expanded="false" style="margin-right: 3px;">
-        Events
-      </button>
-      <ul class="dropdown-menu">
-      </ul>
-    </div>
-    `;
-  $("#buttons").append($(`${html}`));
-  for (let ele of data) {
-    if (ele.infourl === "") {
-      continue;
-    }
-    const url = ele.infourl;
     const name = ele.title;
     const li = document.createElement("li");
     const a = document.createElement("a");

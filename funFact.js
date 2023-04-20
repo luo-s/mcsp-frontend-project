@@ -3,7 +3,7 @@ new Chart(chart1, {
   type: "bar",
   data: {
     labels: [
-      "Great Smoky Mountains",
+      "Great Smoky",
       "Grand Canyon",
       "Zion",
       "Rocky Mountain",
@@ -26,6 +26,9 @@ new Chart(chart1, {
       title: {
         display: true,
         text: "Top 10 Most Visited National Parks in 2022",
+        font: {
+          size: 24,
+        },
       },
       legend: {
         display: false,
@@ -105,6 +108,9 @@ new Chart(chart2, {
       title: {
         display: true,
         text: "How Many People Visited The National Parks in History?",
+        font: {
+          size: 24,
+        },
       },
     },
     responsive: true,
