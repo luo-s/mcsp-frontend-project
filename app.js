@@ -1,13 +1,13 @@
 // get API
 function getIt(defaultInput) {
   $("#cards").empty();
-  $("#carouselExampleDark").empty();
+  $("#carousel").empty();
   $("#results").empty();
   let input = $("#input").val();
   if (defaultInput !== undefined) {
     input = defaultInput;
   }
-  // park API
+
   $.get(
     `https://developer.nps.gov/api/v1/parks?parkCode=${input}&limit=500&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
     (data) => {
@@ -19,45 +19,45 @@ function getIt(defaultInput) {
             return;
           }
         );
+      } else {
+        updatePark(data.data);
+        // thingsToDo API
+        $.get(
+          `https://developer.nps.gov/api/v1/thingstodo?q=${input}&limit=500&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
+          (data) => {
+            updateThingsToDo(data.data);
+            return;
+          }
+        );
+        // placesToGo API
+        $.get(
+          `https://developer.nps.gov/api/v1/places?q=${input}&limit=500&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
+          (data) => {
+            updatePlacesToGo(data.data);
+            return;
+          }
+        );
+        // alerts API
+        $.get(
+          `https://developer.nps.gov/api/v1/alerts?q=${input}&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
+          (data) => {
+            updateAlerts(data.data);
+          }
+        );
+        // events API
+        $.get(
+          `https://developer.nps.gov/api/v1/events?q=${input}&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
+          (data) => {
+            updateEvents(data.data);
+          }
+        );
+        return;
       }
-      updatePark(data.data);
-      return;
-    }
-  );
-  // thingsToDo API
-  $.get(
-    `https://developer.nps.gov/api/v1/thingstodo?q=${input}&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
-    (data) => {
-      updateThingsToDo(data.data);
-      return;
-    }
-  );
-  // placesToGo API
-  $.get(
-    `https://developer.nps.gov/api/v1/places?q=${input}&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
-    (data) => {
-      updatePlacesToGo(data.data);
-      return;
-    }
-  );
-  // alerts API
-  $.get(
-    `https://developer.nps.gov/api/v1/alerts?q=${input}&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
-    (data) => {
-      updateAlerts(data.data);
-    }
-  );
-  // events API
-  $.get(
-    `https://developer.nps.gov/api/v1/events?q=${input}&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
-    (data) => {
-      updateEvents(data.data);
     }
   );
 }
 
 // event listener
-
 $("#yosemite").on("click", function () {
   getIt("yose");
 });
@@ -85,7 +85,7 @@ $("#random").on("click", function () {
   let num2 = Math.floor(Math.random() * 468);
   let num3 = Math.floor(Math.random() * 468);
   $("#cards").empty();
-  $("#carouselExampleDark").empty();
+  $("#carousel").empty();
   $("#results").empty();
   let input = $("#input").val();
   $.get(
@@ -117,7 +117,7 @@ function updatePark(data) {
     const longitude = ele.longitude;
 
     const html = `
-      <div class="card" id="${parkCode}Card" style="width: 80%;">
+      <div class="card" id="${parkCode}Card" style="width: 1000px;">
         <img src="${image}" class="card-img-top" alt="...">
         <div class="card-body">
           <a class="card-title" href="${url}" style="font-size:40px" target="_blank"">${name}</a>
@@ -133,13 +133,9 @@ function updatePark(data) {
           <button type="button" id="${parkCode}" class="btn btn-success">${name}</button>
           <button type="button" class="btn btn-dark"
           onclick="window.open('https://en.wikipedia.org/wiki/${name}')">Wikipedia
-
           </button>
           </li>
         </ul>
-        <div class="card-body">
-
-        </div>
       </div>
     `;
     $("#results").append($(`${html}`));
@@ -241,6 +237,9 @@ function updateThingsToDo(data) {
     `;
   $("#buttons").append($(`${html}`));
   for (let ele of data) {
+    if (ele.url === "") {
+      continue;
+    }
     const url = ele.url;
     const name = ele.title;
     const li = document.createElement("li");
@@ -266,6 +265,9 @@ function updatePlacesToGo(data) {
     `;
   $("#buttons").append($(`${html}`));
   for (let ele of data) {
+    if (ele.url === "") {
+      continue;
+    }
     const url = ele.url;
     const name = ele.title;
     const li = document.createElement("li");
@@ -291,6 +293,9 @@ function updateEvents(data) {
     `;
   $("#buttons").append($(`${html}`));
   for (let ele of data) {
+    if (ele.infourl === "") {
+      continue;
+    }
     const url = ele.infourl;
     const name = ele.title;
     const li = document.createElement("li");
