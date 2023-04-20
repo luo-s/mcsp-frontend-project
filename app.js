@@ -60,7 +60,10 @@ function update(data) {
     const phoneNumber =
       num.slice(0, 3) + "-" + num.slice(3, 6) + "-" + num.slice(6, 10);
     const emailAddress = ele.contacts.emailAddresses[0].emailAddress;
+    const weatherInfo = ele.weatherInfo;
     const parkCode = ele.parkCode;
+    const latitude = ele.latitude;
+    const longitude = ele.longitude;
 
     const html = `
     <div class="card" id="${parkCode}" style="width: 80%;">
@@ -70,8 +73,10 @@ function update(data) {
         <p class="card-text">${description}</p>
        </div>
       <ul class="list-group list-group-flush">
+        <li class="list-group-item">${weatherInfo}</li>
         <li class="list-group-item">${address.line1}, ${address.city}, ${address.stateCode} ${address.postalCode}</li>
         <li class="list-group-item">Contact Number: ${phoneNumber} | Email: ${emailAddress}</li>
+
       </ul>
       <div class="card-body">
         <a href="https://en.wikipedia.org/wiki/${name}" class="card-link" target="_blank">Wikipedia</a>
