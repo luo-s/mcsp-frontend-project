@@ -7,7 +7,6 @@ function getIt(defaultInput) {
   if (defaultInput !== undefined) {
     input = defaultInput;
   }
-
   $.get(
     `https://developer.nps.gov/api/v1/parks?parkCode=${input}&limit=500&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
     (data) => {
@@ -19,8 +18,8 @@ function getIt(defaultInput) {
             return;
           }
         );
-      } else {
-        updatePark(data.data);
+      } else if (data.data.length === 1) {
+        updateParkDetail(data.data);
         // thingsToDo API
         $.get(
           `https://developer.nps.gov/api/v1/thingstodo?q=${input}&limit=500&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
@@ -45,6 +44,8 @@ function getIt(defaultInput) {
           }
         );
         return;
+      } else {
+        updatePark(data.data);
       }
     }
   );
@@ -92,11 +93,50 @@ $("#random").on("click", function () {
 
 // handle result
 function updatePark(data) {
+  console.log(data);
   for (let ele of data) {
     const name = ele.fullName;
     const url = ele.url;
     const description = ele.description;
     const image = ele.images[0].url;
+    const directions = ele.directionsUrl;
+    const directionsInfo = ele.directionsInfo;
+    const address = ele.addresses[0];
+    const num = ele.contacts.phoneNumbers[0].phoneNumber.replace(/\D/g, "");
+    const phoneNumber =
+      num.slice(0, 3) + "-" + num.slice(3, 6) + "-" + num.slice(6, 10);
+    const emailAddress = ele.contacts.emailAddresses[0].emailAddress;
+    const parkCode = ele.parkCode;
+    const html = `
+      <div class="card" id="${parkCode}Card" style="width: 1000px;">
+        <img src="${image}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <a class="card-title" href="${url}" style="font-size:40px" target="_blank"">${name}</a>
+          <p class="card-text">${description}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">${address.line1}, ${address.city}, ${address.stateCode} ${address.postalCode}
+          </li>
+          <li class="list-group-item">Contact Number: ${phoneNumber} | Email: ${emailAddress}</li>
+          <li id="buttons" class="list-group-item" class="buttons">
+          <button type="button" id="${parkCode}" class="btn btn-success">${name}</button>
+          </li>
+        </ul>
+      </div>
+    `;
+    $("#results").append($(`${html}`));
+    // green button event listener
+    $(`#${parkCode}`).on("click", function (event) {
+      getIt(event.target.id);
+    });
+  }
+}
+function updateParkDetail(data) {
+  for (let ele of data) {
+    const name = ele.fullName;
+    const url = ele.url;
+    const description = ele.description;
+    const image = ele.images; //array[index].url
     const directions = ele.directionsUrl;
     const directionsInfo = ele.directionsInfo;
     const address = ele.addresses[0];
@@ -111,7 +151,18 @@ function updatePark(data) {
 
     const html = `
       <div class="card" id="${parkCode}Card" style="width: 1000px;">
-        <img src="${image}" class="card-img-top" alt="...">
+        <div id="carouselpark" class="carousel slide">
+          <div class="carousel-inner">
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselpark" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselpark" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
         <div class="card-body">
           <a class="card-title" href="${url}" style="font-size:40px" target="_blank"">${name}</a>
           <p class="card-text">${description}</p>
@@ -133,6 +184,23 @@ function updatePark(data) {
       </div>
     `;
     $("#results").append($(`${html}`));
+
+    // add img carousel
+    for (let i = 0; i < image.length; i++) {
+      let imgdiv = document.createElement("div");
+      if (i === 0) {
+        imgdiv.className = "carousel-item active";
+      } else {
+        imgdiv.className = "carousel-item";
+      }
+      let img = document.createElement("img");
+      img.src = image[i].url;
+      img.className = "d-block w-100";
+      img.alt = "picture failed to load";
+      img.style = "height: 600px";
+      $(".carousel-inner").append(imgdiv);
+      imgdiv.append(img);
+    }
 
     // green button event listener
     $(`#${parkCode}`).on("click", function (event) {
