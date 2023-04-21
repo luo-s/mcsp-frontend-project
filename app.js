@@ -194,7 +194,7 @@ function updateParkDetail(data) {
       img.src = image[i].url;
       img.className = "d-block w-100";
       img.alt = "picture failed to load";
-      img.style = "height: 600px";
+      img.style = "height: 800px";
       $(".carousel-inner").append(imgdiv);
       imgdiv.append(img);
     }
