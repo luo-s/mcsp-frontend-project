@@ -81,9 +81,8 @@ $("#random").on("click", function () {
   $("#cards").empty();
   $("#carousel").empty();
   $("#results").empty();
-  let input = $("#input").val();
   $.get(
-    `https://developer.nps.gov/api/v1/parks?parkCode=${input}&limit=500&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
+    `https://developer.nps.gov/api/v1/parks?parkCode=""&limit=500&api_key=7La6D6fg0dVgtXjh8QgGUrOT0ncoCgBk75P9mFhh`,
     (data) => {
       updatePark([data.data[num1], data.data[num2], data.data[num3]]);
       return;
@@ -99,8 +98,6 @@ function updatePark(data) {
     const url = ele.url;
     const description = ele.description;
     const image = ele.images[0].url;
-    const directions = ele.directionsUrl;
-    const directionsInfo = ele.directionsInfo;
     const address = ele.addresses[0];
     const num = ele.contacts.phoneNumbers[0].phoneNumber.replace(/\D/g, "");
     const phoneNumber =
